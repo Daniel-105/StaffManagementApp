@@ -1,8 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<Staff>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Display</title>
+</head>
+<body>
+    <div class="user-grid">
+
+        @foreach (var item in Model)
+        {
+            <!-- User -->
+            <div class="user-container">
+                <div class="user-image">
+                    <img src="@item.ImageURL">
+                </div>
+                <h2>
+                    <a asp-controller="Home" asp-route-id="@item.Id" asp-action="UpdateUser">@item.Name</a>
+                </h2>
+                <h3>@item.Team</h3>
+            </div>
+        }
+    </div>
+</body>
+</html>
+
