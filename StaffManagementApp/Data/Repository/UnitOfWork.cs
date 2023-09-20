@@ -6,10 +6,12 @@ namespace StaffManagementApp.Data.Repository
     {
         private ApplicationDbContext _db;
         public IStaffRepository Staff { get; private set; }
+        public ITeamRepository Teams { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
             Staff = new StaffRepository(_db);
+            Teams = new TeamRepository(_db);
         }
 
         public void Save()

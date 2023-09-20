@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StaffManagementApp.Data.Repository.IRepository;
 using StaffManagementApp.Models;
+using StaffManagementApp.ViewModel;
 using System.Diagnostics;
 
 namespace StaffManagementApp.Controllers
@@ -26,7 +27,6 @@ namespace StaffManagementApp.Controllers
             return View(staffList);
         }
 
-        // GET: /User/Edit/{id}
         public IActionResult UpdateUser(int id)
         {
             // Retrieve the user from the database based on the id
@@ -38,8 +38,19 @@ namespace StaffManagementApp.Controllers
                 return NotFound();
             }
 
-            // Pass the user data to the view
-            return View(user);
+            // Retrieve a list of team names directly using the Repository
+            var teamNames = _unitOfWork.Teams.GetAll().Select(t => t.Name).ToList();
+
+
+            // Create a ViewModel instance and populate it with the user and team names
+            var viewModel = new UpdateUserVM
+            {
+                Staff = user,
+                TeamNames = teamNames
+            };
+
+            // Pass the ViewModel to the view
+            return View(viewModel);
         }
 
         [HttpPost] // Defining that this action is of the type POST

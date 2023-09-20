@@ -3,6 +3,7 @@
     public interface IUnitOfWork
     {
         IStaffRepository Staff { get; }
+        ITeamRepository Teams { get; }
         void Save();
     }
 }

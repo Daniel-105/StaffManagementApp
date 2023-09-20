@@ -12,8 +12,8 @@ using StaffManagementApp.Data;
 namespace StaffManagementApp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230920143830_createDataBaseAndInitialSeeding")]
-    partial class createDataBaseAndInitialSeeding
+    [Migration("20230920163801_initalSeeding")]
+    partial class initalSeeding
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,11 +49,12 @@ namespace StaffManagementApp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Team")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TeamId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("TeamId");
 
                     b.ToTable("Staff");
 
@@ -65,7 +66,7 @@ namespace StaffManagementApp.Migrations
                             Email = "joao@gmail.com",
                             Hobbies = "Thriatlon",
                             Name = "Joao",
-                            Team = "A"
+                            TeamId = 1
                         },
                         new
                         {
@@ -74,7 +75,7 @@ namespace StaffManagementApp.Migrations
                             Email = "maria@gmail.com",
                             Hobbies = "Painting",
                             Name = "Maria",
-                            Team = "B"
+                            TeamId = 2
                         },
                         new
                         {
@@ -83,7 +84,7 @@ namespace StaffManagementApp.Migrations
                             Email = "carlos@gmail.com",
                             Hobbies = "Cooking",
                             Name = "Carlos",
-                            Team = "A"
+                            TeamId = 1
                         },
                         new
                         {
@@ -92,7 +93,7 @@ namespace StaffManagementApp.Migrations
                             Email = "ana@gmail.com",
                             Hobbies = "Reading",
                             Name = "Ana",
-                            Team = "B"
+                            TeamId = 2
                         },
                         new
                         {
@@ -101,7 +102,7 @@ namespace StaffManagementApp.Migrations
                             Email = "luis@gmail.com",
                             Hobbies = "Gardening",
                             Name = "Luis",
-                            Team = "C"
+                            TeamId = 3
                         },
                         new
                         {
@@ -110,7 +111,7 @@ namespace StaffManagementApp.Migrations
                             Email = "sofia@gmail.com",
                             Hobbies = "Photography",
                             Name = "Sofia",
-                            Team = "A"
+                            TeamId = 1
                         },
                         new
                         {
@@ -119,7 +120,7 @@ namespace StaffManagementApp.Migrations
                             Email = "pedro@gmail.com",
                             Hobbies = "Swimming",
                             Name = "Pedro",
-                            Team = "C"
+                            TeamId = 3
                         },
                         new
                         {
@@ -128,7 +129,7 @@ namespace StaffManagementApp.Migrations
                             Email = "marta@gmail.com",
                             Hobbies = "Traveling",
                             Name = "Marta",
-                            Team = "B"
+                            TeamId = 2
                         },
                         new
                         {
@@ -137,8 +138,53 @@ namespace StaffManagementApp.Migrations
                             Email = "rita@gmail.com",
                             Hobbies = "Playing Guitar",
                             Name = "Rita",
-                            Team = "A"
+                            TeamId = 1
                         });
+                });
+
+            modelBuilder.Entity("StaffManagementApp.Models.Team", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teams");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Team A"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Team B"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Team C"
+                        });
+                });
+
+            modelBuilder.Entity("StaffManagementApp.Models.Staff", b =>
+                {
+                    b.HasOne("StaffManagementApp.Models.Team", "Team")
+                        .WithMany()
+                        .HasForeignKey("TeamId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Team");
                 });
 #pragma warning restore 612, 618
         }
