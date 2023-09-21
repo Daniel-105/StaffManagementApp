@@ -30,25 +30,6 @@ namespace StaffManagementApp.Controllers
 
         public IActionResult UpdateUser(int id)
         {
-            // Retrieve the user from the database based on the id
-            //var user = _unitOfWork.Staff.Get(x => x.Id == id);
-
-            //if (user == null)
-            //{
-            //    // Handle the case where the user with the specified id was not found
-            //    return NotFound();
-            //}
-
-            // Retrieve a list of team names directly using the Repository
-            //var teamNames = _unitOfWork.Teams.GetAll().Select(t => t.Name).ToList();
-
-            //// Create a ViewModel instance and populate it with the user, team names, and selected TeamId
-            //var viewModel = new UpdateUserVM
-            //{
-            //    Staff = user,
-            //    TeamNames = teamNames,
-            //    SelectedTeamId = user.TeamId
-            //};
             UpdateUserVM updateUserVM = new()
             {
                 TeamsListList = _unitOfWork.Teams.GetAll().Select(u => new SelectListItem
@@ -60,6 +41,7 @@ namespace StaffManagementApp.Controllers
 
             };
             updateUserVM.Staff = _unitOfWork.Staff.Get(x => x.Id == id);
+
             // Pass the ViewModel to the view
             return View(updateUserVM);
         }
@@ -105,6 +87,12 @@ namespace StaffManagementApp.Controllers
             TempData["success"] = "Category Updated Successfully";
             return RedirectToAction("Index");
             //return View(viewModel.Staff);
+        }
+
+        public IActionResult Team(int id)
+        {
+            IEnumerable<Staff> staff = _unitOfWork.Staff.GetAll(x => x.TeamId == id, includeProperties: "Team").ToList();
+            return View(staff);
         }
 
         public IActionResult Privacy()

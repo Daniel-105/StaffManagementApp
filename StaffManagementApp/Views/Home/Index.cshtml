@@ -1,31 +1,30 @@
 ﻿@model List<Staff>
 
-    <div class="card-header bg-Success bg-gradient m-lg-0 py-3">
-        <div class="row">
-            <div class="col-9">
-                <h2 class="text-primary py-2 px-3"> Staff</h2>
-            </div>
-            <div class="col-3 text-end">
-                <a asp-controller="Home" asp-action="Manage" class="btn btn-primary fs-3 px-3">Manage</a>
-            </div>
+<div class="card-header bg-Success bg-gradient m-lg-0 py-3">
+    <div class="row">
+        <div class="col-1122">
+            <h2 class="text-primary text-center py-2 px-3"> Staff</h2>
         </div>
     </div>
-    <div class="user-grid container mb-5">
+</div>
+<div class="user-grid container mb-5">
 
-        @foreach (var item in Model)
-        {
-            <!-- User -->
-            <div class="user-container bg-warning rounded-5">
-                <div class="user-image">
-                    <img class="rounded-5" src="@item.ImageURL">
-                </div>
-                <div class="mx-5 text-black">
-                    <h3 class="text-start">
-                        <a asp-controller="Home" asp-route-id="@item.Id" asp-action="UpdateUser">@item.Name</a>
-                    </h3>
-                    <h2 class="text-start">@item.Team.Name</h2>
-                </div>
+    @foreach (var item in Model)
+    {
+        <!-- User -->
+        <div class="user-container bg-warning rounded-5">
+            <div class="user-image">
+                <img class="rounded-5" src="@item.ImageURL">
             </div>
-        }
-    </div>
+            <div class="mx-5 text-black">
+                <h3 class="text-start">
+                    <a asp-controller="Home" asp-route-id="@item.Id" asp-action="UpdateUser">@item.Name</a>
+                </h3>
+                <h2 class="text-start">
+                    <a asp-controller="Home" asp-route-id="@item.TeamId" asp-action="Team">@item.Team.Name</a>
+                </h2>
+            </div>
+        </div>
+    }
+</div>
 
