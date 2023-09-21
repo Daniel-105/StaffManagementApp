@@ -1,29 +1,31 @@
 ﻿@model List<Staff>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Display</title>
-</head>
-<body>
-    <div class="user-grid">
+    <div class="card-header bg-Success bg-gradient m-lg-0 py-3">
+        <div class="row">
+            <div class="col-9">
+                <h2 class="text-primary py-2 px-3"> Staff</h2>
+            </div>
+            <div class="col-3 text-end">
+                <a asp-controller="Home" asp-action="Manage" class="btn btn-primary fs-3 px-3">Manage</a>
+            </div>
+        </div>
+    </div>
+    <div class="user-grid container mb-5">
 
         @foreach (var item in Model)
         {
             <!-- User -->
-            <div class="user-container">
+            <div class="user-container bg-warning rounded-5">
                 <div class="user-image">
-                    <img src="@item.ImageURL">
+                    <img class="rounded-5" src="@item.ImageURL">
                 </div>
-                <h2>
-                    <a asp-controller="Home" asp-route-id="@item.Id" asp-action="UpdateUser">@item.Name</a>
-                </h2>
-                <h3>@item.Team</h3>
+                <div class="mx-5 text-black">
+                    <h3 class="text-start">
+                        <a asp-controller="Home" asp-route-id="@item.Id" asp-action="UpdateUser">@item.Name</a>
+                    </h3>
+                    <h2 class="text-start">@item.Team.Name</h2>
+                </div>
             </div>
         }
     </div>
-</body>
-</html>
 

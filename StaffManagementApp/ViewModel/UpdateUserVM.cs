@@ -1,4 +1,5 @@
-﻿using StaffManagementApp.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using StaffManagementApp.Models;
 
 namespace StaffManagementApp.ViewModel
 {
@@ -6,5 +7,7 @@ namespace StaffManagementApp.ViewModel
     {
         public Staff Staff { get; set; }
         public List<string> TeamNames { get; set; }
+        public int SelectedTeamId { get; set; }
+        public IEnumerable<SelectListItem> TeamsListList { get; internal set; }
     }
 }

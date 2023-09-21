@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using StaffManagementApp.Data.Repository.IRepository;
 using StaffManagementApp.Models;
 using StaffManagementApp.ViewModel;
@@ -23,53 +24,63 @@ namespace StaffManagementApp.Controllers
 
         public IActionResult Index()
         {
-            IEnumerable<Staff> staffList = _unitOfWork.Staff.GetAll();
-            return View(staffList);
+            IEnumerable<Staff> staff = _unitOfWork.Staff.GetAll(includeProperties: "Team").ToList();
+            return View(staff);
         }
 
         public IActionResult UpdateUser(int id)
         {
             // Retrieve the user from the database based on the id
-            var user = _unitOfWork.Staff.Get(x => x.Id == id);
+            //var user = _unitOfWork.Staff.Get(x => x.Id == id);
 
-            if (user == null)
-            {
-                // Handle the case where the user with the specified id was not found
-                return NotFound();
-            }
+            //if (user == null)
+            //{
+            //    // Handle the case where the user with the specified id was not found
+            //    return NotFound();
+            //}
 
             // Retrieve a list of team names directly using the Repository
-            var teamNames = _unitOfWork.Teams.GetAll().Select(t => t.Name).ToList();
+            //var teamNames = _unitOfWork.Teams.GetAll().Select(t => t.Name).ToList();
 
-
-            // Create a ViewModel instance and populate it with the user and team names
-            var viewModel = new UpdateUserVM
+            //// Create a ViewModel instance and populate it with the user, team names, and selected TeamId
+            //var viewModel = new UpdateUserVM
+            //{
+            //    Staff = user,
+            //    TeamNames = teamNames,
+            //    SelectedTeamId = user.TeamId
+            //};
+            UpdateUserVM updateUserVM = new()
             {
-                Staff = user,
-                TeamNames = teamNames
-            };
+                TeamsListList = _unitOfWork.Teams.GetAll().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                Staff = new Staff(),
 
+            };
+            updateUserVM.Staff = _unitOfWork.Staff.Get(x => x.Id == id);
             // Pass the ViewModel to the view
-            return View(viewModel);
+            return View(updateUserVM);
         }
 
-        [HttpPost] // Defining that this action is of the type POST
-        public IActionResult UpdateUser(Staff staff, IFormFile? file)
+        [HttpPost]
+        public IActionResult UpdateUser(UpdateUserVM viewModel, IFormFile? file)
         {
             // associating the path for the wwwroot (/) with the variable wwwRootPath
             string wwwRootPath = _webHostEnviroment.WebRootPath;
             if (file != null)
             {
-                //Creating a new Guid and conserting it to a string 
-                // Then concatnate that with the extention of the file (.jpeg, .pdf, etc...)
+                // Creating a new Guid and converting it to a string
+                // Then concatenate that with the extension of the file (.jpeg, .pdf, etc...)
                 string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
                 string staffPath = Path.Combine(wwwRootPath, @"images\staff");
 
                 // Check if there is an image loaded
-                if (!string.IsNullOrEmpty(staff.ImageURL))
+                if (!string.IsNullOrEmpty(viewModel.Staff.ImageURL))
                 {
-                    //Delete the old image
-                    var oldImagePath = Path.Combine(wwwRootPath, staff.ImageURL.TrimStart('\\'));
+                    // Delete the old image
+                    var oldImagePath = Path.Combine(wwwRootPath, viewModel.Staff.ImageURL.TrimStart('\\'));
                     if (System.IO.File.Exists(oldImagePath))
                     {
                         System.IO.File.Delete(oldImagePath);
@@ -80,16 +91,20 @@ namespace StaffManagementApp.Controllers
                 {
                     file.CopyTo(fileStream);
                 }
-                staff.ImageURL = @"\images\staff\" + fileName;
+                viewModel.Staff.ImageURL = @"\images\staff\" + fileName;
             }
-            _unitOfWork.Staff.Update(staff);
+
+            // Update the Staff object's TeamId with the selected TeamId
+            viewModel.Staff.TeamId = viewModel.SelectedTeamId;
+
+            // Update the Staff object in the database
+            _unitOfWork.Staff.Update(viewModel.Staff);
 
             // Push the post to the database
             _unitOfWork.Save();
             TempData["success"] = "Category Updated Successfully";
             return RedirectToAction("Index");
-            //return View(staff);
-
+            //return View(viewModel.Staff);
         }
 
         public IActionResult Privacy()
